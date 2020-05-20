@@ -1,5 +1,5 @@
 #!/bin/bash
-# License: MIT. See license file in root directory
+# License: MIT
 # Copyright(c) JetsonHacks (2017-2019)
 #
 # Changes: Updated script to OpenCV 4.3.0
