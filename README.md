@@ -2,7 +2,9 @@
 Exploring OpenCV 4.3.0 with camera(s) & C++ on the Jetson Nano B01.
 
 ## Testing the camera(s)
-Make the script executable:
+> Scripts are found in the `scripts` directory.
+
+Make the `runCam.sh` script executable:
 ```bash
 $ chmod + x runCam.sh
 ```
@@ -17,6 +19,8 @@ $ runCam.sh -d
 > **[Additional information on Gstreamer](https://developer.ridgerun.com/wiki/index.php?title=Jetson_Nano/Gstreamer/Example_Pipelines/Capture_Display)**
 
 ## Compiling the project(s)
+> Projects are found in the cpp_proj directory
+
 Each project would be created in a standalone directory, and CMake would be used to compile the cpp files. 
 > Ensure that the cpp files & CMakeLists.txt are present in the parent directory before reunning CMake!
 
