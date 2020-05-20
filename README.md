@@ -1,5 +1,20 @@
-# cv4_cpp
-Exploring OpenCV 4.3.0 with C++ 
+# Eye(s) of the Jetson Nano
+Exploring OpenCV 4.3.0 with camera(s) & C++ on the Jetson Nano B01.
+
+## Testing the camera(s)
+Make the script executable:
+```bash
+$ chmod + x runCam.sh
+```
+Test the [camera](https://elinux.org/Jetson_Nano#Cameras) connected via `runCam.sh`:
+```bash
+$ runCam.sh
+```
+To test 2 cameras, a `-d` flag would be added:
+```bash
+$ runCam.sh -d
+```
+> **[Additional information on Gstreamer](https://developer.ridgerun.com/wiki/index.php?title=Jetson_Nano/Gstreamer/Example_Pipelines/Capture_Display)**
 
 ## Compiling the project(s)
 Each project would be created in a standalone directory, and CMake would be used to compile the cpp files. 
