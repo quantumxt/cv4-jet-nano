@@ -58,11 +58,11 @@ done
 
 echo "Opening 1st Camera..."
 #Display Camera 1
-gnome-terminal --tab -- gst-launch-1.0 nvarguscamerasrc sensor_id=0 ! "video/x-raw(memory:NVMM),width=$WIDTH, height=$HEIGHT, framerate=21/1, format=NV12" ! nvvidconv flip-method=$FLIP ! 'video/x-raw,width=7200, height=720' ! nvvidconv ! nvegltransform ! nveglglessink -e
+gnome-terminal --tab -- gst-launch-1.0 nvarguscamerasrc sensor_id=0 ! "video/x-raw(memory:NVMM),width=$WIDTH, height=$HEIGHT, framerate=21/1, format=NV12" ! nvvidconv flip-method=$FLIP ! 'video/x-raw,width=720, height=480' ! nvvidconv ! nvegltransform ! nveglglessink -e
 #Open 2nd camera if dual arg is specified -> $ runCam.sh dual
 if [ $DUAL -eq 1 ] 
 then
     echo "Opening 2nd Camera..."
-    gnome-terminal --tab -- gst-launch-1.0 nvarguscamerasrc sensor_id=1 ! "video/x-raw(memory:NVMM),width=$WIDTH, height=$HEIGHT, framerate=21/1, format=NV12" ! nvvidconv flip-method=$FLIP ! 'video/x-raw,width=720, height=720' ! nvvidconv ! nvegltransform ! nveglglessink -e
+    gnome-terminal --tab -- gst-launch-1.0 nvarguscamerasrc sensor_id=1 ! "video/x-raw(memory:NVMM),width=$WIDTH, height=$HEIGHT, framerate=21/1, format=NV12" ! nvvidconv flip-method=$FLIP ! 'video/x-raw,width=720, height=480' ! nvvidconv ! nvegltransform ! nveglglessink -e
 fi
 
