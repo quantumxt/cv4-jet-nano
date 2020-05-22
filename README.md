@@ -1,5 +1,5 @@
 # Eye(s) of the Jetson Nano
-Exploring OpenCV 4.3.0 with camera(s) & C++ on the Jetson Nano B01.
+Exploring OpenCV 4.3.0 & AI with camera(s) & C++ on the Jetson Nano B01.
 
 ## Testing the camera(s)
 > Scripts are found in the `scripts` directory.
