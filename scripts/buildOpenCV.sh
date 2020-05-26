@@ -2,7 +2,7 @@
 # License: MIT
 # Copyright(c) JetsonHacks (2017-2019)
 #
-# Changes: Updated script to OpenCV 4.3.0
+# Changes: Updated script to OpenCV 4.3.0, add EIGEN & OPENMP support
 
 OPENCV_VERSION=4.3.0
 # Jetson Nano
@@ -166,6 +166,8 @@ time cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D WITH_GSTREAMER_0_10=OFF \
       -D WITH_QT=ON \
       -D WITH_OPENGL=ON \
+      -D WITH_EIGEN=ON \
+      -D WITH_OPENMP=ON \
       -D OPENCV_DNN_CUDA=ON \
       -D BUILD_opencv_python2=ON \
       -D BUILD_opencv_python3=ON \
