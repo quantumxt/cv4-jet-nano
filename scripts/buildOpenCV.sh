@@ -7,7 +7,7 @@
 OPENCV_VERSION=4.3.0
 # Jetson Nano
 ARCH_BIN=5.3
-INSTALL_DIR=/usr/local
+INSTALL_DIR=/usr/local/opencv
 # Download the opencv_extras repository
 # If you are installing the opencv testdata, ie
 #  OPENCV_TEST_DATA_PATH=../opencv_extra/testdata
