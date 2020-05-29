@@ -1,4 +1,7 @@
 # Eye(s) of the Jetson Nano
+
+<a href="LICENSE" ><img src="https://img.shields.io/github/license/1487quantum/cv4-jet-nano?style=for-the-badge"/></a>
+
 Exploring OpenCV 4.3.0 & AI with camera(s) & C++ on the Jetson Nano B01.
 
 ## Testing the camera(s)
@@ -24,6 +27,19 @@ $ runCam.sh -d
 Each project would be created in a standalone directory, and CMake would be used to compile the cpp files. 
 > Ensure that the cpp files & CMakeLists.txt are present in the parent directory before reunning CMake!
 
+### Script
+Update the script (inside the `cpp_proj` dir) permissions before running.
+```
+$ sudo chmod +x 
+```
+After that, run the script of the target directory:
+```
+$ ./compile.sh [target_dir]
+```
+> For example, `$ ./compile.sh cam_fps`
+
+### Manually
+
 Create a `build` directory in the parent directory & enter the directory.
 ```bash
 $ cd parent_dir
@@ -35,7 +51,7 @@ $ cmake -G 'Unix Makefiles' ..
 ```
 After that, compile the files:
 ```bash
-$ make
+$ make -j4
 ```
 
 # License
