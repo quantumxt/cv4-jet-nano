@@ -112,7 +112,7 @@ cd /usr/local/cuda/include
 sudo patch -N cuda_gl_interop.h $WHEREAMI'/patches/OpenGLHeader.patch' 
 
 # Python 2.7
-# sudo apt-get install -y python-dev  python-numpy  python-py  python-pytest
+sudo apt-get install -y python-dev  python-numpy  python-py  python-pytest
 
 # Python 3.6
 sudo apt-get install -y python3-dev python3-numpy python3-py python3-pytest
@@ -174,7 +174,7 @@ time cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D WITH_EIGEN=ON \
       -D WITH_OPENMP=ON \
       -D OPENCV_DNN_CUDA=ON \
-      -D BUILD_opencv_python2=OFF \
+      -D BUILD_opencv_python2=ON \
       -D BUILD_opencv_python3=ON \
       -D BUILD_TESTS=OFF \
       -D BUILD_PERF_TESTS=OFF \
@@ -249,6 +249,9 @@ if [ "$PACKAGE_OPENCV" != "" ] ; then
    fi
 fi
 
+# Add OpenCV path to .bashrc
+echo '# Add OpenCV lib to python path' >> ~/.bashrc
+echo 'export PYTHONPATH=$PYTHONPATH:~/opencv/build/python_loader/' >> ~/.bashrc
 
 # check installation
 IMPORT_CHECK="$(python3 -c "import cv2 ; print(cv2.__version__)")"
