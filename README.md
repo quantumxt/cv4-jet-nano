@@ -4,6 +4,8 @@
 
 Exploring OpenCV 4.3.0 & AI with camera(s) & C++ on the Jetson Nano B01.
 
+> **Note:** Compile the OpenCV source before installing ROS!
+
 ## Testing the camera(s)
 > Scripts are found in the `scripts` directory.
 
