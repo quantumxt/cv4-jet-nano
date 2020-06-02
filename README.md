@@ -6,8 +6,44 @@ Exploring OpenCV 4.3.0 & AI with camera(s) & C++ on the Jetson Nano B01.
 
 > **Note:** Compile the OpenCV source before installing ROS!
 
-## Testing the camera(s)
+## Organisation
+The directory is split into 3 sections:
+- **AI_ML:** AI & Machine Learning related project(s)
+- **cpp_proj:** C++ related projects
+- **scripts:** Installation & setup scripts
+
+## Scripts
 > Scripts are found in the `scripts` directory.
+
+Update the script(s) permissions before running.
+```
+$ sudo chmod +x 
+```
+**Note: Ensure that the CUDA compiler (nvcc) is added to ~/.bashrc**
+```
+$ echo '# Append CUDA tools path' >> ~/.bashrc
+$ echo 'export PATH=/usr/local/cuda-10.2/bin${PATH:+:${PATH}}'>> ~/.bashrc
+$ echo 'export LD_LIBRARY_PATH=/usr/local/cuda-10.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}'>> ~/.bashrc
+```
+
+### CUDA Sample
+
+The CUDA samples have to be compiled, run `makeCUDAsample.sh` to compile the samples.
+> The samples would be copied and compiled at ~/cuda_samples.
+```
+$ ./makeCUDAsample.sh
+```
+
+### Heatsink fan
+> Only applicable if an external heatsink fan is attached to the Jetson Nano.
+
+Run `runFan.sh` to turn on the heatsink fan.
+```
+$ ./runFan.sh
+```
+
+
+### Testing the camera(s)
 
 Make the `runCam.sh` script executable:
 ```bash
@@ -23,18 +59,38 @@ $ runCam.sh -d
 ```
 > **[Additional information on Gstreamer](https://developer.ridgerun.com/wiki/index.php?title=Jetson_Nano/Gstreamer/Example_Pipelines/Capture_Display)**
 
-## Compiling the project(s)
+### OpenCV Installation
+> OpenCV **4.1.1** is installed in Jetson Nano by default, but without CUDA support. Run `buildOpenCV.sh` to compile & install OpenCV **4.3.0** from source. 
+
+> Source directory is located at `~/`, installation directory is located at `/usr/local/opencv`.
+```
+$ ./buildOpenCV.sh
+```
+
+### ROS Melodic Installation
+
+Run `getROS_melodic.sh` to install ROS Melodic.
+```
+$ ./getROS_melodic.sh
+```
+
+
+### OpenVSLAM Installation
+
+> Ensure that OpenCV is installed before installing openVSLAM.
+Run `getOpenVSLAM.sh` to install OpenVSLAM.
+```
+$ ./getOpenVSLAM.sh
+```
+
+## Compiling the C++ project(s)
 > Projects are found in the cpp_proj directory
 
 Each project would be created in a standalone directory, and CMake would be used to compile the cpp files. 
 > Ensure that the cpp files & CMakeLists.txt are present in the parent directory before reunning CMake!
 
-### Script
-Update the script (inside the `cpp_proj` dir) permissions before running.
-```
-$ sudo chmod +x 
-```
-After that, run the script of the target directory:
+### Via Script
+Run the script of the target directory:
 ```
 $ ./compile.sh [target_dir]
 ```
