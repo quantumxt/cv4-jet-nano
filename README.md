@@ -13,7 +13,7 @@ The directory is split into 3 sections:
 - **scripts:** Installation & setup scripts
 
 ## Scripts
-> Scripts are found in the `scripts` directory.
+> Python & Shell Scripts are found in the `scripts` directory.
 
 Update the script(s) permissions before running.
 ```
