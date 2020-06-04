@@ -22,7 +22,7 @@ std::shared_ptr<vilib::DetectorBaseGPU> detector_gpu_;
 #define PYRAMID_MAX_LEVEL PYRAMID_LEVELS
 
 // FAST detector parameters
-#define FAST_EPSILON (10.0f)
+#define FAST_EPSILON (30.0f) //Tune this
 #define FAST_MIN_ARC_LENGTH 10
 // Remark: the Rosten CPU version only works with
 //         SUM_OF_ABS_DIFF_ON_ARC and MAX_THRESHOLD
@@ -81,7 +81,7 @@ std::unordered_map<int, int> fDetector(cv::Mat img)
     std::unordered_map<int, int> points_combined;
     points_combined.reserve(points_gpu.size());
 
-    int qqq = 0;		//Index tracker
+    int qqq = 0; //Index tracker
     for (auto it = points_gpu.begin(); it != points_gpu.end(); ++it) {
         int key = ((int)it->x_) | (((int)it->y_) << 16);
 
@@ -94,7 +94,7 @@ std::unordered_map<int, int> fDetector(cv::Mat img)
         }
         qqq++;
     }
-    std::cout<<"All points: "<<points_gpu.size() <<", Valid points: "<<points_combined.size()<<std::endl;
+    std::cout << "All points: " << points_gpu.size() << ", Valid points: " << points_combined.size() << ", Epsilon: " << FAST_EPSILON << std::endl;
 
     return points_combined;
 }
@@ -114,7 +114,7 @@ cv::Mat dCircle(cv::Mat img, int x, int y)
 {
     int thickness = 1;
     cv::circle(img,
-   cv::Point(x, y),
+        cv::Point(x, y),
         1 * 3 * 1024,
         cv::Scalar(0, 255, 255),
         thickness,
@@ -122,7 +122,6 @@ cv::Mat dCircle(cv::Mat img, int x, int y)
         10);
     return img;
 }
-
 
 //Draw text & detected features on img
 cv::Mat processImg(cv::Mat img, std::unordered_map<int, int> pts)
@@ -146,42 +145,43 @@ cv::Mat processImg(cv::Mat img, std::unordered_map<int, int> pts)
     return img;
 }
 
-// Main detector 
+// Main detector
 cv::Mat runProcess(cv::Mat img)
 {
-cv::Mat gImg;
-        cvtColor(img, gImg, cv::COLOR_BGR2GRAY); //Convert to grayscale for detector
+    cv::Mat gImg;
+    cvtColor(img, gImg, cv::COLOR_BGR2GRAY); //Convert to grayscale for detector
 
-        pts = fDetector(gImg); //Feature detector (FAST) with grayscale img
-        img = processImg(img, pts); //Draw the feature point(s)on the img/vid
+    pts = fDetector(gImg); //Feature detector (FAST) with grayscale img
+    img = processImg(img, pts); //Draw the feature point(s)on the img/vid
 
-        // showIMG(displayIMG(imgL,pts,fps));
+    // showIMG(displayIMG(imgL,pts,fps));
 
-        // Deinitialize the pyramid pool (for consecutive frames)
-        PyramidPool::deinit();
-        std::cout << "==="<< std::endl;
+    // Deinitialize the pyramid pool (for consecutive frames)
+    PyramidPool::deinit();
+    std::cout << "===" << std::endl;
     return img;
-
 }
 
-cv::Mat mImg;	//Main img
+cv::Mat mImg; //Main img
 
-std::string wTitle{"Img"};
+std::string wTitle{ "Img" };
 
 int main(int argc, char** argv)
 {
-    //mImg = imread("a.jpg", IMREAD_COLOR); 
-   mImg = imread(argv[1], cv::IMREAD_COLOR); 		//Enter image path, e.g. $ ./vfast_img a.jpg
-	mImg = runProcess(mImg);
-	cv::namedWindow(wTitle, cv::WINDOW_AUTOSIZE);				
-	cv::imshow(wTitle,mImg);
-	cv::waitKey(0);
-//Save image output
-std::vector<int> compression_params;
-compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
-compression_params.push_back(100);
-cv::imwrite("img_c.jpg", mImg, compression_params);
 
-	cv::destroyWindow(wTitle);
+    //mImg = imread("a.jpg", IMREAD_COLOR);
+    mImg = imread(argv[1], cv::IMREAD_COLOR); //Enter image path, e.g. $ ./vfast_img a.jpg
+
+    mImg = runProcess(mImg);
+    cv::namedWindow(wTitle, cv::WINDOW_AUTOSIZE);
+    cv::imshow(wTitle, mImg);
+    cv::waitKey(0);
+    //Save image output as img_c.jpg
+    std::vector<int> compression_params;
+    compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
+    compression_params.push_back(95);
+    cv::imwrite("img_c.jpg", mImg, compression_params);
+
+    cv::destroyWindow(wTitle);
     return 0;
 }
