@@ -251,9 +251,9 @@ if [ "$PACKAGE_OPENCV" != "" ] ; then
 fi
 
 # Add OpenCV path to .bashrc
-echo '# Add OpenCV lib to python path' >> ~/.bashrc
+echo '# Add OpenCV lib to path' >> ~/.bashrc
 echo 'export PYTHONPATH=$PYTHONPATH:~/opencv/build/python_loader/' >> ~/.bashrc
-
+echo 'export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opencv/lib/pkgconfig/' >> ~/.bashrc
 # check installation
 IMPORT_CHECK="$(python3 -c "import cv2 ; print(cv2.__version__)")"
 if [[ $IMPORT_CHECK != *$OPENCV_VERSION* ]]; then
