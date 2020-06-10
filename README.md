@@ -24,6 +24,8 @@ $ sudo chmod +x
 $ echo '# Append CUDA tools path' >> ~/.bashrc
 $ echo 'export PATH=/usr/local/cuda-10.2/bin${PATH:+:${PATH}}'>> ~/.bashrc
 $ echo 'export LD_LIBRARY_PATH=/usr/local/cuda-10.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}'>> ~/.bashrc
+$ echo 'export CUDA_INCLUDE_DIRS=/usr/local/cuda-10.2/include'>> ~/.bashrc
+$ echo 'export CUDA_ROOT_ENV=/usr/local/cuda-10.2'>> ~/.bashrc
 ```
 
 ### CUDA Sample
