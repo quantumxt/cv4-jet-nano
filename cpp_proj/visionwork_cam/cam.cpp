@@ -93,9 +93,10 @@ int main(int argc, char** argv)
 
     std::string resolution = "1280x720", input = "device:///nvcamera";
 
+//3264x1848 option not working currently
     app.setDescription("This sample captures frames from NVIDIA GStreamer camera");
     app.addOption('r', "resolution", "Input frame resolution", nvxio::OptionHandler::oneOf(&resolution,
-        { "2592x1944", "2592x1458", "1280x720", "640x480" }));
+        { "3264x1848", "1920x1080", "1280x720", "640x480" }));
 
     app.init(argc, argv);
 
