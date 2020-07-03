@@ -4,8 +4,6 @@
 
 Exploring OpenCV 4.3.0 & AI with camera(s) & C++ on the Jetson Nano B01. This serves as a documentation & reference for the various resources available for the Jetson Nano & Xavier NX development board.
 
-> **Note:** Compile the OpenCV source before installing ROS!
-
 ## Organisation
 The directory is split into 3 sections:
 - **AI_ML:** AI & Machine Learning related project(s)
@@ -71,10 +69,12 @@ $ runCam.sh -d
 ```
 > **[Additional information on Gstreamer](https://developer.ridgerun.com/wiki/index.php?title=Jetson_Nano/Gstreamer/Example_Pipelines/Capture_Display)**
 
-### OpenCV Installation
+### Custom OpenCV Installation
+> **Note:** Compile the OpenCV source before installing ROS!
+
 > OpenCV **4.1.1** is installed in Jetson Nano by default, but without CUDA support. Run `buildOpenCV.sh` to compile & install OpenCV **4.3.0** from source. 
 
-> Source directory is located at `~/`, installation directory is located at `/usr/local/opencv`.
+> Install the source at `/usr/local`.
 ```
 $ ./buildOpenCV.sh
 ```
@@ -97,6 +97,7 @@ $ ./getOpenVSLAM.sh
 
 ## Compiling the C++ project(s)
 More information could be found [here](cpp_proj/README.md).
+
 
 # License
 Licensed under the [MIT License](./LICENSE).
