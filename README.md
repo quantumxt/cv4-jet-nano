@@ -96,33 +96,7 @@ $ ./getOpenVSLAM.sh
 ```
 
 ## Compiling the C++ project(s)
-> Projects are found in the cpp_proj directory
-
-Each project would be created in a standalone directory, and CMake would be used to compile the cpp files. 
-> Ensure that the cpp files & CMakeLists.txt are present in the parent directory before reunning CMake!
-
-### Via Script
-Run the script of the target directory:
-```
-$ ./compile.sh [target_dir]
-```
-> For example, `$ ./compile.sh cam_fps`
-
-### Manually
-
-Create a `build` directory in the parent directory & enter the directory.
-```bash
-$ cd parent_dir
-$ mkdir build && cd build
-```
-After that, run `cmake` to generate the Makefiles in the current `build` directory:
-```bash
-$ cmake -G 'Unix Makefiles' ..
-```
-After that, compile the files:
-```bash
-$ make -j4
-```
+More information could be found [here](cpp_proj/README.md).
 
 # License
 Licensed under the [MIT License](./LICENSE).
