@@ -1,8 +1,8 @@
 # C++ Project directory
 The directory is categorised based on the underlying libraries that are used:
-- cv: Basic OpenCV examples
-- vilib: OpenCV + vilib_fast
-- visionworks: Nvidia VisionWorks library
+- **cv**: Basic OpenCV examples
+- **vilib**: OpenCV + vilib_fast
+- **visionworks**: Nvidia VisionWorks library
 
 > **Note:** Projects in the various directories would require relevant dependencies for it to compile, more details are available in the sections below.
 
@@ -11,23 +11,37 @@ The directory is categorised based on the underlying libraries that are used:
 All the relevant OpenCV example are located here, ensure that OpenCV is installed beforehand.
 
 > If OpenCV is compiled from source, ensure that it is installed into the system via `$ sudo make install`. The typical OpenCV source location would be `/usr/local` or `/usr/local/opencv`.
-> For OpenCV python support, ensure that the OpenCV path is appeneded to the environment variable, for example adding the following line in `.bashrc`: `export PYTHONPATH=$PYTHONPATH:/usr/local/opencv-3.4.10/release/python_loader/`
+
+> For OpenCV python support, ensure that the OpenCV path is appeneded to the environment variable, for example adding the following line in `.bashrc`:
+```bash
+export PYTHONPATH=$PYTHONPATH:/usr/local/opencv-3.4.10/release/python_loader/
+```
+
+---
 
 ### vilib
 More information could be found [here](https://github.com/1487quantum/vilib_ros).
 
+---
+
 ### VisionWorks
 Ensure that the `glfw3-dev` library is installed and the NVXIO library is compiled:
+
 **Install dependencies**
 ```bash
 $ sudo apt install libglfw3-dev
 ```
+
 **Build NVXIO**
-```
+```bash
 $ cd /usr/share/visionworks/sources/
 $ sudo make
 ```
 After that, proceed on to compile the projects.
+
+> Reference: https://forums.developer.nvidia.com/t/linking-nvxio-ovxio-libraries-into-own-cmake-project/82627/6
+
+---
 
 ## Compiling the C++ project(s)
 Each project would be created in a standalone directory, and CMake would be used to compile the cpp files. 
@@ -35,10 +49,13 @@ Each project would be created in a standalone directory, and CMake would be used
 
 ### Via Script
 Run the script of the target directory:
-```
+```bash
 $ ./compile.sh [target_dir]
 ```
-For example, `$ ./compile.sh cv/cam_fps`
+For example, 
+```bash
+$ ./compile.sh cv/cam_fps
+```
 
 > **Note:** Specify the directory without the backslash behind!
 
