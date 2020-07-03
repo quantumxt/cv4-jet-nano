@@ -108,4 +108,6 @@ if [[ $IMPORT_CHECK != *$OPENCV_VERSION* ]]; then
   echo "The loaded version does not match the version built here."
   echo "Please check the installation."
   echo "The first check should be the PYTHONPATH environment variable."
+else
+  echo "** Installed opencv-$OPENCV_VERSION successfully! **"
 fi
