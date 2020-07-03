@@ -2,7 +2,7 @@
 
 <a href="LICENSE" ><img src="https://img.shields.io/github/license/1487quantum/cv4-jet-nano?style=for-the-badge"/></a>
 
-Exploring OpenCV 4.3.0 & AI with camera(s) & C++ on the Jetson Nano B01.
+Exploring OpenCV 4.3.0 & AI with camera(s) & C++ on the Jetson Nano B01. This serves as a documentation & reference for the various resources available for the Jetson Nano & Xavier NX development board.
 
 > **Note:** Compile the OpenCV source before installing ROS!
 
