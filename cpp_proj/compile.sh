@@ -1,9 +1,14 @@
 #!/bin/bash
 # ./compile.sh [proj_dir_name]
-BPATH="$(pwd)/$1/build"
-echo $BPATH
+MPATH="$(pwd)/$1"
+BPATH="$MPATH/build"
+printf "Build path: $BPATH\n\n"
+if [ ! -f $MPATH/CMakeLists.txt ]; then
+	echo "CMakeLists.txt not found! Exiting..."
+	exit 0
+fi
 mkdir -p $BPATH
 cd $BPATH
 cmake ..
-make -j4
+make -j$(nproc)
 cd ..
