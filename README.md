@@ -72,11 +72,11 @@ $ runCam.sh -d
 ### Custom OpenCV Installation
 > **Note:** Compile the OpenCV source before installing ROS!
 
-> OpenCV **4.1.1** is installed in Jetson Nano by default, but without CUDA support. Run `buildOpenCV.sh` to compile & install OpenCV **4.3.0** from source. 
+> OpenCV **4.1.1** is installed in Jetson Nano by default, but without CUDA support. Run `installOpenCV.sh` to compile & install OpenCV **4.3.0** from source. 
 
 > Install the source at `/usr/local`.
 ```
-$ ./buildOpenCV.sh
+$ ./installOpenCV.sh
 ```
 
 ### ROS Melodic Installation
