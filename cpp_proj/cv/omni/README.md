@@ -1,5 +1,7 @@
 # Omnidirectional Camera Calibration & Rectification
 
+> For fisheye images that has a FOV >= 180 degrees. [[Ref]](https://stackoverflow.com/a/49230413)
+
 ## Compilation
 
 Refer to the README in the cpp_project directory.
@@ -29,3 +31,7 @@ $ ./omni_rectify [CALIBRATION_FILE]  [IMG_TO_DISTORT]  [ZOOM_OUT_LEVEL]
 - **IMG_TO_DISTORT**: Target image to be rectified using the calibration configuration.
 - **ZOOM_OUT_LEVEL**: Distance from the center of the image. Larger number corresponds to a larger FoV (Field of View). Ranges from 1.0 <-> 7.0.
 
+## References
+- https://stackoverflow.com/questions/48990136/opencv-undistorts-only-a-central-part-of-fisheye-image?
+- https://stackoverflow.com/questions/34316306/opencv-fisheye-calibration-cuts-too-much-of-the-resulting-image
+- https://stackoverflow.com/questions/44407690/is-is-possible-to-calibrate-fish-eye-camera-using-standard-opencv
