@@ -9,6 +9,8 @@ find_package(OpenCV REQUIRED)
 
 #Add executable
 add_executable(omni_calib omni_mono_calib.cpp)
+add_executable(omni_calib_stereo omni_stereo_calib.cpp)
 add_executable(omni_rectify omni_rectify.cpp)
 target_link_libraries(omni_calib ${OpenCV_LIBS})
+target_link_libraries(omni_calib_stereo ${OpenCV_LIBS})
 target_link_libraries(omni_rectify ${OpenCV_LIBS})
