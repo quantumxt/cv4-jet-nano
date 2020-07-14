@@ -81,7 +81,7 @@ static bool detectChessboardCorners(const std::vector<std::string>& list_l, std:
             continue;
         }
         bool found_l{ findChessboardCorners(img_l, boardSize, points_l) };
-        bool found_r{ findChessboardCorners(img_l, boardSize, points_l) };
+        bool found_r{ findChessboardCorners(img_r, boardSize, points_r) };
         if (found_l && found_r) {
             std::cout << "[ \x1B[32m✔\033[0m ] "; //Found corners, 32: green, colors: https://stackoverflow.com/questions/4053837/colorizing-text-in-the-console-with-c
             if (points_l.type() != CV_64FC2)
@@ -133,6 +133,9 @@ static void saveCameraParams(const std::string& filename, const int flags, const
     fs << "camera_matrix_2" << cameraMatrix2;
     fs << "distortion_coefficients_2" << disCoeffs2;
     fs << "xi_2" << xi2;
+
+    fs << "rvec" << rvec;
+    fs << "tvec" << tvec;
 
     cv::Mat om_t(1, 6, CV_64F);
     cv::Mat(rvec).reshape(1, 1).copyTo(om_t.colRange(0, 3));
