@@ -11,10 +11,7 @@ int main(int argc, char** argv)
     std::cout << "Reading IMG..." << std::endl;
 
     Mat src = imread(argv[1], IMREAD_COLOR); //Load img from cmd line
-    //Mat testImg = imread("t.jpg",IMREAD_COLOR);
     Mat grayImg = imread(argv[1], IMREAD_GRAYSCALE); //Grayscale
-    //Mat testImg = imread("t.jpg",IMREAD_UNCHANGED);	//Transparent PNG/TIFF
-    //Mat testImg = imread("t.jpg, IMREAD_ANYCOLOR | IMREAD_ANYDEPTH);	//Read 16-bit/channel color Image, example camera RAW images
 
     if (src.empty()) {
         std::cout << "IMG is empty!" << std::endl;
@@ -37,19 +34,10 @@ int main(int argc, char** argv)
         Point(erosion_size, erosion_size));
     dilate(ithr, ithr, element);
 
-    int lowThreshold = 20;
-    const int max_lowThreshold = 80;
-    const int ratio = 4;
-    const int kernel_size = 3;
-    //Canny
-    Canny(ithr, detected_edges, lowThreshold, lowThreshold * ratio, kernel_size);
-    dst = Scalar::all(0);
-    src.copyTo(dst, detected_edges);
-
     std::vector<Vec3f> circles;
     HoughCircles(ithr, circles, HOUGH_GRADIENT, 1,
         grayImg.rows / 20, // change this value to detect circles with different distances to each other
-        100, 30, 650, 850 // change the last two parameters
+        100, 30, 600, 850 // change the last two parameters
         // (min_radius & max_radius) to detect larger circles
         );
     Point minPt(10000, 10000);
@@ -65,42 +53,55 @@ int main(int argc, char** argv)
 
         Vec3i c = circles[i];
         Point center = Point(c[0], c[1]);
+        // circle outline
+        int radius = c[2];
 
         if (center.y > (grayImg.rows / 3) && center.y < (grayImg.rows * 2 / 3)) {
+            if (radius + grayImg.cols / 2 < grayImg.cols) {
+                // circle center
+                circle(src, center, 1, Scalar(0, 100, 100), 3, LINE_AA);
 
-            // circle center
-            circle(src, center, 1, Scalar(0, 100, 100), 3, LINE_AA);
+                int centerDiff{ abs(center.y - grayImg.rows / 2) };
+                if (centerDiff < minDiff) {
+                    std::cout << abs(center.y - grayImg.rows / 2) << std::endl;
+                    std::cout << minPt.y << std::endl;
+                    minPt.x = center.x;
+                    minPt.y = center.y;
+                    minDiff = centerDiff;
+                    minRadius = radius;
+                }
 
-            // circle outline
-            int radius = c[2];
-
-            int centerDiff{ abs(center.y - grayImg.rows / 2) };
-            if (centerDiff < minDiff) {
-                std::cout << abs(center.y - grayImg.rows / 2) << std::endl;
-                std::cout << minPt.y << std::endl;
-                minPt.x = center.x;
-                minPt.y = center.y;
-                minDiff = centerDiff;
-                minRadius = radius;
+                circle(src, center, radius, Scalar(255, 0, 255), 3, LINE_AA);
+                putText(src, (std::string) "(" + std::to_string(center.x) + ", " + std::to_string(center.y) + ", r" + std::to_string(radius) + "), " + std::to_string(centerDiff), Point(center.x, center.y + 5),
+                    FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 200, 0), 1, CV_AA);
             }
-
-            circle(src, center, radius, Scalar(255, 0, 255), 3, LINE_AA);
-            putText(src, (std::string) "R: " + std::to_string(radius) + ", " + std::to_string(centerDiff), Point(center.x, center.y),
-                FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 200, 0), 1, CV_AA);
         }
     }
     circle(src, minPt, 1, Scalar(250, 0, 0), 3, LINE_AA);
     circle(src, minPt, minRadius, Scalar(255, 0, 0), 3, LINE_AA);
 
+    cv::Mat pRoi(Mat::zeros(src.size(), CV_8UC1));
+    if (minRadius != 10000) {
+        // Remove details outside circle
+        Mat mask = Mat::zeros(src.size(), CV_8UC1);
+        circle(mask, minPt, minRadius, Scalar(255), -1, 8);
+
+        src.copyTo(pRoi, mask);
+        //Crop img
+        constexpr int border{ 10 };
+        int cOffset{ minPt.x - pRoi.cols / 2 < 0 ? -border : border };
+        pRoi = pRoi(Rect(pRoi.cols / 2 - (minRadius + cOffset), 0, 2 * (minRadius + cOffset + (minPt.x - pRoi.cols / 2)), pRoi.rows));
+    }
+
     namedWindow("Color", WINDOW_NORMAL);
     namedWindow("Gray", WINDOW_NORMAL);
-    namedWindow("Canny", WINDOW_NORMAL);
+    namedWindow("Mask", WINDOW_NORMAL);
     namedWindow("Threshold", WINDOW_NORMAL);
     //namedWindow("Color", WINDOW_OPENGL);		//With openCV support
     //namedWindow("Color", WINDOW_AUTOSIZE);	//Cannot resize window
     imshow("Color", src);
     imshow("Threshold", ithr);
-    imshow("Canny", dst);
+    imshow("Mask", pRoi);
     imshow("Gray", grayImg);
     waitKey(0);
     destroyWindow("Color");
