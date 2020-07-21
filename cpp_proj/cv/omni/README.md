@@ -44,3 +44,11 @@ $ ./omni_rectify [CALIBRATION_FILE]  [IMG_TO_DISTORT]  [ZOOM_OUT_LEVEL]
 - **IMG_TO_DISTORT**: Target image to be rectified using the calibration configuration.
 - **ZOOM_OUT_LEVEL**: Distance from the center of the image. Larger number corresponds to a larger FoV (Field of View). Ranges from 1.0 <-> 7.0.
 
+
+## Known Issues
+- Stereo calibration crashes with if the last few image path in the image list is not found.
+```
+terminate called after throwing an instance of 'cv::Exception'
+  what():  OpenCV(3.4.10) /usr/local/opencv-3.4.10/modules/core/src/matrix_wrap.cpp:1659: error: (-215:Assertion failed) !fixedSize() in function 'release'
+```
+
