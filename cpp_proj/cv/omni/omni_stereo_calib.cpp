@@ -137,6 +137,11 @@ static void saveCameraParams(const std::string& filename, const int flags, const
     fs << "rvec" << rvec;
     fs << "tvec" << tvec;
 
+cv::Mat R,T;
+Rodrigues(rvec,R);
+Rodrigues(tvec,T);
+std::cout<<R<<"\t"<<T<<std::endl;
+
     cv::Mat om_t(1, 6, CV_64F);
     cv::Mat(rvec).reshape(1, 1).copyTo(om_t.colRange(0, 3));
     cv::Mat(tvec).reshape(1, 1).copyTo(om_t.colRange(3, 6));
@@ -207,7 +212,7 @@ int main(int argc, char** argv)
     cv::Size boardSize(atoi(argv[3]), atoi(argv[4])); //8 x 5
     cv::Size imageSize; //Img width & height
 
-    constexpr int flags = cv::omnidir::CALIB_FIX_SKEW + cv::omnidir::CALIB_FIX_CENTER;
+    constexpr int flags = cv::omnidir::CALIB_FIX_GAMMA;	//cv::omnidir::CALIB_FIX_SKEW 
     const char* outputFilename = "./out_camera_params_stereo.xml"; //Save in current working directory
 
     const double square_width{ atof(argv[4]) }; //0.03;
@@ -252,12 +257,13 @@ int main(int argc, char** argv)
     cv::Vec3d rvec, tvec;
     double _xi1, _xi2, rms;
 
-    cv::TermCriteria criteria(3, 200, 1e-8);
+    cv::TermCriteria criteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 200, 1e-8);
 
     //  Mat newK;
     //  fisheye::estimateNewCameraMatrixForUndistortRectify(K, D, imageSize, Matx33d::eye(), newK, 1);
 
     rms = cv::omnidir::stereoCalibrate(objectPoints, imagePoints_L, imagePoints_R, imageSize, imageSize, K1, xi1, D1, K2, xi2, D2, rvec, tvec, rvecs, tvecs, flags, criteria, idx);
+
 
     _xi1 = xi1.at<double>(0);
     _xi2 = xi2.at<double>(0);

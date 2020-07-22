@@ -20,6 +20,7 @@
 #include "opencv2/viz.hpp"
 #include "opencv2/highgui.hpp"
 #include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp> // drawing shapes
 #include <opencv2/ximgproc.hpp>
 #include "opencv2/ccalib/omnidir.hpp"
 #include <iostream>
@@ -52,6 +53,43 @@ int err(const std::string& msg, const int& rval)
     std::cerr << msg << std::endl;
     return rval;
 }
+
+void draw_epipolar(const cv::Mat& imgSrc, const int& numLines)
+{
+    for (int i = 1; i < imgSrc.rows; i += imgSrc.rows / numLines) {
+        int thicknessLine = 2;
+        cv::Scalar colorLine(0, 0, 255); // Green
+        cv::Point p1(0, i);
+        cv::Point p2(imgSrc.cols, i);
+        cv::line(imgSrc, p1, p2, colorLine, thicknessLine);
+    }
+/*
+ cv::Mat imgchannel[6], locMat, clrMat;
+    cv::split(pointCloud, imgchannel);
+
+    std::vector<cv::Mat> channelsTmp;
+    channelsTmp.push_back(imgchannel[0]);
+    channelsTmp.push_back(imgchannel[1]);
+    channelsTmp.push_back(imgchannel[2]);
+    cv::merge(channelsTmp, locMat);
+
+    std::vector<cv::Mat> clrTmp;
+    clrTmp.push_back(imgchannel[3]);
+    clrTmp.push_back(imgchannel[4]);
+    clrTmp.push_back(imgchannel[5]);
+    cv::merge(clrTmp, clrMat);
+*/
+}
+
+void splitChannels(const cv::Mat &imgSrc, cv::Mat &imgOut, const int &tsize, const int &start, const int &stop){
+ cv::Mat imgchannel[tsize];
+    cv::split(imgSrc, imgchannel);
+ std::vector<cv::Mat> channelsTmp;
+for(int k=start;k<stop+1;++k)
+    channelsTmp.push_back(imgchannel[k]);
+    cv::merge(channelsTmp, imgOut);
+}
+
 
 int main(int argc, char** argv)
 {
@@ -115,8 +153,8 @@ int main(int argc, char** argv)
     const int centerX{ new_size.width / 2 };
     const int centerY{ new_size.height / 2 };
 
-    //   constexpr int flags_out = cv::omnidir::RECTIFY_PERSPECTIVE;
-    constexpr int flags_out = cv::omnidir::RECTIFY_LONGLATI;
+    //   constexpr int flags_out = cv::omnidir::RECTIFY_PERSPECTIVE, RECTIFY_LONGLATI;
+    constexpr int flags_out = cv::omnidir::RECTIFY_PERSPECTIVE;
     constexpr float aspectRatio{ 1.7 };
 
     /*
@@ -124,29 +162,72 @@ int main(int argc, char** argv)
         0, new_size.height / zoomOut, centerY,
         0, 0, 1);
 */
-    cv::Matx33f Knew = cv::Matx33f(new_size.width / 3.142, 0, 0,
-        0, new_size.height / 3.142, 0,
+    cv::Matx33f Knew = cv::Matx33f(new_size.width / 3.142, 0, flags_out == cv::omnidir::RECTIFY_PERSPECTIVE ? centerX : 0,
+        0, new_size.height / 3.142, flags_out == cv::omnidir::RECTIFY_PERSPECTIVE ? centerY : 0,
         0, 0, 1);
 
     std::cout << "\nRectifying IMG..." << std::endl;
 
     cv::Size imgSize = distorted_l.size();
-    int numDisparities = 16 * 20;
-    int SADWindowSize = 20;
+    int numDisparities = 16 * 15;
+    int SADWindowSize = 9;
     cv::Mat disMap;
-    int pointType = cv::omnidir::XYZ; //cv::omnidir::XYZrgb
+    int pointType = cv::omnidir::XYZRGB; //cv::omnidir::XYZrgb
     // the range of theta is (0, pi) and the range of phi is (0, pi)
 
     cv::Mat imageRec1, imageRec2, pointCloud;
     cv::omnidir::stereoReconstruct(distorted_l, distorted_r, kMat_l, dMat_l, xiMat_l, kMat_r, dMat_r, xiMat_r, rMat, tMat, flags_out, numDisparities, SADWindowSize, disMap, imageRec1, imageRec2, imgSize, Knew, pointCloud);
 
+    //// viz
+    cv::viz::Viz3d window("Coordinate Frame");
+    window.showWidget("Coordinate Widget", cv::viz::WCoordinateSystem());
+
+    //std::cout<<pointCloud <<std::endl;
+
+    cv::viz::Viz3d viewer;
+
+    //Split into 2 matrix
+    cv::Mat locMat, clrMat;
+    splitChannels(pointCloud,locMat,6, 0,2);
+    splitChannels(pointCloud,clrMat, 6, 3,5);
+
+    clrMat.convertTo(clrMat, CV_8U); //Convert from CV_32F C3 to CV_8U C3	//https://stackoverflow.com/questions/10167534/how-to-find-out-what-type-of-a-mat-object-is-with-mattype-in-opencv#17820615
+
+    viewer = cv::viz::Viz3d("Point Cloud");
+    cv::viz::WCloud cloud_widget = cv::viz::WCloud(locMat, clrMat);
+    viewer.showWidget("Cloud", cloud_widget);
+    //    viewer.spinOnce(1,true);
+
+    //Rotate view
+    cv::Mat rot_vec = cv::Mat::zeros(1, 3, CV_32F);
+    float translation_phase = 0.0, translation = 0.0;
+    while (!viewer.wasStopped()) {
+        /* Rotation using rodrigues */
+        /// Rotate around (1,1,1)
+        rot_vec.at<float>(0, 0) += 3.142 * 0.01f;
+        rot_vec.at<float>(0, 1) += 3.142 * 0.01f;
+        rot_vec.at<float>(0, 2) += 3.142 * 0.01f;
+
+        /// Shift on (1,1,1)
+        translation_phase += 3.142 * 0.01f;
+        translation = sin(translation_phase);
+
+        cv::Rodrigues(rot_vec, locMat);
+
+        /// Construct pose
+        cv::Affine3f pose(locMat, cv::Vec3f(translation, translation, translation));
+
+        viewer.setWidgetPose("Cloud", pose);
+
+        viewer.spinOnce(1, true);
+    }
 
     //sgbm
     cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(0, numDisparities, SADWindowSize);
 
     // param
-    int sgbmWinSize = 17;
-    int numberOfDisparities = 16 * 10;
+    int sgbmWinSize = 9; //5	Range: 3 - 11, odd num
+    int numberOfDisparities = 16 * 15;
     int cn = 3;
 
     // filter
@@ -155,15 +236,12 @@ int main(int argc, char** argv)
     cv::Ptr<cv::StereoMatcher> sm = cv::ximgproc::createRightMatcher(sgbm);
 
     // init
-    sgbm->setPreFilterCap(100);
+        sgbm->setMinDisparity(-10);
+    sgbm->setPreFilterCap(30); //30,100
     sgbm->setBlockSize(sgbmWinSize);
     sgbm->setP1(8 * cn * sgbmWinSize * sgbmWinSize);
     sgbm->setP2(32 * cn * sgbmWinSize * sgbmWinSize);
-    sgbm->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
-
-    //// viz
-    cv::viz::Viz3d window("Coordinate Frame");
-    window.showWidget("Coordinate Widget", cv::viz::WCoordinateSystem());
+    sgbm->setMode(cv::StereoSGBM::MODE_SGBM); //MODE_SGBM_3WAY, MODE_HH (8Ways)
 
     cv::Mat disparity16S, img16Sr;
 
@@ -174,7 +252,6 @@ int main(int argc, char** argv)
     disparity16S.convertTo(showDisparity, CV_8UC1, 255 / (numberOfDisparities * 16.));
 
     cv::imshow("disparity", showDisparity);
-
     // cv::omnidir::undistortImage(distorted, undistorted, kMat, dMat, xiMat, flags_out, Knew, new_size);
 
     kMat_l.release();
@@ -193,22 +270,25 @@ viewer = cv::viz::Viz3d( "Point Cloud" );
 viewer.showWidget( "Cloud", cloud_widget );
 */
 
-    cv::namedWindow("Original L", cv::WINDOW_NORMAL);
-    cv::namedWindow("Undistort L", cv::WINDOW_NORMAL);
-    cv::namedWindow("Original R", cv::WINDOW_NORMAL);
-    cv::namedWindow("Undistort R", cv::WINDOW_NORMAL);
+    cv::namedWindow("Original", cv::WINDOW_NORMAL);
+    cv::namedWindow("Undistort", cv::WINDOW_NORMAL);
     cv::namedWindow("pcl", cv::WINDOW_NORMAL);
-    cv::imshow("Original L", distorted_l);
-    cv::imshow("Undistort L", imageRec1);
-    cv::imshow("Original R", distorted_r);
-    cv::imshow("Undistort R", imageRec2);
+
+    //Original
+    hconcat(distorted_l, distorted_r, distorted_l);
+    draw_epipolar(distorted_l, 15);
+    cv::imshow("Original", distorted_l);
+    //Undistort
+    hconcat(imageRec1, imageRec2, imageRec1);
+    draw_epipolar(imageRec1, 15);
+    cv::imshow("Undistort", imageRec1);
+
     cv::imshow("pcl", disMap);
     cv::waitKey(0);
 
-    cv::destroyWindow("Original L");
-    cv::destroyWindow("Undistort L");
-    cv::destroyWindow("Original R");
-    cv::destroyWindow("Undistort R");
+    cv::destroyWindow("Original");
+    cv::destroyWindow("Undistort");
     cv::destroyWindow("pcl");
+    cv::destroyWindow("disparity");
     return 0;
 }
