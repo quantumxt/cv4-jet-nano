@@ -23,6 +23,8 @@
 #include <opencv2/imgproc.hpp> // drawing shapes
 #include <opencv2/ximgproc.hpp>
 #include "opencv2/ccalib/omnidir.hpp"
+   #include "opencv2/xfeatures2d.hpp"
+#include <opencv2/features2d.hpp>
 #include <iostream>
 
 static cv::Mat node2array(const cv::FileNode& param, const std::string& sheader, const int& aWidth, const int& aHeight)
@@ -148,6 +150,7 @@ int main(int argc, char** argv)
     if (distorted_l.empty())
         return err("Could not read img...", -1);
 
+
     cv::Size new_size(distorted_l.cols, distorted_l.rows);
 
     const int centerX{ new_size.width / 2 };
@@ -177,6 +180,124 @@ int main(int argc, char** argv)
 
     cv::Mat imageRec1, imageRec2, pointCloud;
     cv::omnidir::stereoReconstruct(distorted_l, distorted_r, kMat_l, dMat_l, xiMat_l, kMat_r, dMat_r, xiMat_r, rMat, tMat, flags_out, numDisparities, SADWindowSize, disMap, imageRec1, imageRec2, imgSize, Knew, pointCloud);
+
+
+//Sift
+  cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
+
+  std::vector<cv::KeyPoint> keypoints_1, keypoints_2;    
+  f2d->detect( imageRec1, keypoints_1 );
+  f2d->detect( imageRec2, keypoints_2 );
+
+cv::Mat output1,output2;
+    cv::drawKeypoints(imageRec1, keypoints_1, output1);
+    cv::drawKeypoints(imageRec2, keypoints_2, output2);
+
+ cv::namedWindow("uu", cv::WINDOW_NORMAL);
+    hconcat(output1, output2, output1);
+    cv::imshow("uu", output1);
+    cv::waitKey(0);
+
+ cv::Mat descriptors_1, descriptors_2;    
+  f2d->compute( imageRec1, keypoints_1, descriptors_1 );
+  f2d->compute( imageRec2, keypoints_2, descriptors_2 );
+
+//Matcher
+    cv::Ptr<cv::DescriptorMatcher> matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+    std::vector< std::vector<cv::DMatch> > knn_matches;
+    matcher->knnMatch( descriptors_1, descriptors_2, knn_matches, 2 );
+    //-- Filter matches using the Lowe's ratio test
+    const float ratio_thresh = 0.7f;
+    std::vector<cv::DMatch> good_matches;
+
+std::vector<cv::Point2f> pts1;
+std::vector<cv::Point2f> pts2;
+
+    for (size_t i = 0; i < knn_matches.size(); i++)
+    {
+        if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance)
+        {
+            good_matches.push_back(knn_matches[i][0]);
+	pts1.push_back(keypoints_1[i].pt);
+	pts2.push_back(keypoints_2[i].pt);
+        }
+    }
+
+/*
+ cv::BFMatcher matcher;
+  std::vector< cv::DMatch > matches;
+  matcher.match( descriptors_1, descriptors_2, matches );
+*/
+
+    //-- Draw matches
+cv::Mat outout;
+cv::drawMatches(imageRec1,keypoints_1,imageRec2,keypoints_2,good_matches,outout, cv::Scalar::all(-1),cv::Scalar::all(-1), std::vector< char >(),cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+
+cv::namedWindow("lll", cv::WINDOW_NORMAL);
+    cv::imshow("lll", outout);
+    cv::waitKey(0);
+
+cv::Mat maskF;
+//Find fundamental matrix
+cv::Mat fundamentalMatrix = cv::findFundamentalMat(pts1,pts2,cv::FM_RANSAC,3,0.8, maskF);
+std::cout<<fundamentalMatrix<<std::endl;
+
+std::cout<<pts1<<std::endl;
+//Compute epilines
+    std::vector<cv::Vec3d> leftLines, rightLines;
+    cv::computeCorrespondEpilines(pts1, 1, fundamentalMatrix, rightLines);
+    cv::computeCorrespondEpilines(pts2, 2, fundamentalMatrix, leftLines);
+
+    cv::Mat imagePointLeftCameraMatrix=cv::Mat_<double>(3,1);
+
+for(std::size_t i=0;i<rightLines.size();i=i+1)
+    {
+        cv::Vec3d l=rightLines.at(i);
+	double a=l.val[0];
+        double b=l.val[1];
+        double c=l.val[2];
+        std::cout<<"------------------------a,b,c Using OpenCV (ax+by+c=0)------------------------------"<<std::endl;
+        std::cout<< a <<", "<<b <<", "<<c <<std::endl;
+        std::cout<<"------------------------calculating a,b,c (ax+by+c=0) ------------------------------"<<std::endl;
+        
+        imagePointLeftCameraMatrix.at<double>(0,0)=pts1[i].x;
+        imagePointLeftCameraMatrix.at<double>(1,0)=pts1[i].y;
+        imagePointLeftCameraMatrix.at<double>(2,0)=1;
+        cv::Mat rightLineMatrix=fundamentalMatrix*imagePointLeftCameraMatrix;
+        
+        std::cout<< rightLineMatrix.at<double>(0,0) <<", "<<rightLineMatrix.at<double>(0,1) <<", "<<rightLineMatrix.at<double>(0,2) <<std::endl;
+
+        /////////////////////////////////drawing the line on the image/////////////////////////////////
+        /*ax+by+c=0*/
+        double x0,y0,x1,y1;
+        x0=0;
+        y0=(-c-a*x0)/b;
+	x1=imageRec2.cols;
+        y1=(-c-a*x1)/b;
+
+	std::cout<<"error: "<< a*pts2.at(i).x+ b*pts2.at(i).y +c<<std::endl;
+	cv::line(imageRec2, cv::Point(x0,y0), cv::Point(x1,y1), cvScalar(0,255,0), 1);
+    }
+cv::namedWindow("kkk", cv::WINDOW_NORMAL);
+    cv::imshow("kkk", imageRec1);
+    cv::waitKey(0);
+
+/*
+//keep only the "good" points, remove the rest
+    std::vector<cv::Point>::iterator it1, it2; 
+    it1 = pts1.begin(); 
+    it2 = pts2.begin(); 
+for(int i=0;i<maskF.rows;++i) {
+if(maskF.at<cv::Vec3b>(cv::Point(0,i))!=(cv::Vec3b)1){		//Keep 1, remove 0
+pts1.erase(it1);
+pts2.erase(it2);
+//std::cout << i << std::endl;
+}
+++it1;
+++it2;
+}
+*/
+
 
     //// viz
     cv::viz::Viz3d window("Coordinate Frame");

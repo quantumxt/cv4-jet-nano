@@ -215,6 +215,10 @@ int main(int argc, char** argv)
     std::vector<cv::Vec3d> rvecs, tvecs;
     double _xi, rms;
     cv::TermCriteria criteria(3, 200, 1e-8);
+
+      //  Mat newK;
+      //  fisheye::estimateNewCameraMatrixForUndistortRectify(K, D, imageSize, Matx33d::eye(), newK, 1);
+
     rms = cv::omnidir::calibrate(objectPoints, imagePoints, imageSize, K, xi, D, rvecs, tvecs, flags, criteria, idx);
     _xi = xi.at<double>(0);
     saveCameraParams(outputFilename, flags, K, D, _xi,
