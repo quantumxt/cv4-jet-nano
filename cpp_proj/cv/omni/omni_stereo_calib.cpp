@@ -231,7 +231,7 @@ int main(int argc, char** argv)
             flags & cv::omnidir::CALIB_FIX_CENTER ? "fix_center " : "");
     }
 
-    std::cout << "\n[CONFIG]\nIMG_LIST Path:\t\t\t" << argv[1] << "\nCHECKBOARD_HORIZONTAL_POINTS:\t" << argv[2] << "\nCHECKBOARD_VERTICAL_POINTS:\t" << argv[3] << "\nSQUARE_WIDTH (mm):\t\t" << argv[4] << "\nFLAGS:\t\t\t\t" << buf << "\nOutput path:\t\t\t" << outputFilename << std::endl;
+    std::cout << "\n[CONFIG]\nIMG_LIST Left Path:\t\t" << argv[1] << "\nIMG_LIST Right Path:\t\t" << argv[2] << "\nCHECKBOARD_HORIZONTAL_POINTS:\t" << argv[3] << "\nCHECKBOARD_VERTICAL_POINTS:\t" << argv[4] << "\nSQUARE_WIDTH (mm):\t\t" << argv[5] << "\nFLAGS:\t\t\t\t" << buf << "\nOutput path:\t\t\t" << outputFilename << std::endl;
 
     std::vector<cv::Mat> objectPoints, imagePoints_L, imagePoints_R;
     std::vector<std::string> image_list_L, detect_list_L, image_list_R, detect_list_R; // get image name list
