@@ -219,7 +219,7 @@ SV=ON
 fi
 
 pmsg "MAIN INSTALLATION\nCloning OpenVSLAM..."
-git clone https://github.com/xdspacelab/openvslam
+git clone https://github.com/1487quantum/openvslam
 cd openvslam
 makeDirEnter build
 pmsg "Making & Compiling OpenVSLAM..."
