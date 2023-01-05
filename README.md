@@ -1,6 +1,6 @@
 # Eye(s) of the Jetson Nano
 
-<a href="LICENSE" ><img src="https://img.shields.io/github/license/1487quantum/cv4-jet-nano?style=for-the-badge"/></a>
+<a href="LICENSE" ><img src="https://img.shields.io/github/license/quantumxt/cv4-jet-nano?style=for-the-badge"/></a>
 
 Exploring OpenCV 4.3.0 & AI with camera(s) & C++ on the Jetson Nano B01. This serves as a documentation & reference for the various resources available for the Jetson Nano & Xavier NX development board.
 
