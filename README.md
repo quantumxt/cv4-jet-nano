@@ -31,6 +31,22 @@ sudo chmod +x add_cuda_path.sh
 ./add_cuda_path.sh
 ```
 
+## Tools
+
+### Firefox
+
+Install Firefox browser via `flatpak`, as there may be issues installing via snap.
+
+```sh
+cd ~/cv4-jet-nano/scripts
+sudo chmod +x install_firefox_flatpak.sh.sh
+./install_firefox_flatpak.sh
+```
+
+ **References**
+ - [https://jetsonhacks.com/2025/07/12/why-chromium-suddenly-broke-on-jetson-orin-and-how-to-bring-it-back/](https://jetsonhacks.com/2025/07/12/why-chromium-suddenly-broke-on-jetson-orin-and-how-to-bring-it-back/)
+ - [https://forums.developer.nvidia.com/t/neither-chromium-nor-firefox-work-with-my-jetson-orin-nano/338669](https://forums.developer.nvidia.com/t/neither-chromium-nor-firefox-work-with-my-jetson-orin-nano/338669)
+
 ## Camera
 
 ### Quickstart
@@ -74,9 +90,13 @@ sudo chmod +x runFan.sh
 ### CUDA Sample
 
 The CUDA samples have to be compiled, run `makeCUDAsample.sh` to compile the samples.
+
 > The samples would be copied and compiled at ~/cuda_samples.
-```
-$ ./makeCUDAsample.sh
+
+```sh
+cd ~/cv4-jet-nano/scripts/archive
+sudo chmod +x makeCUDAsample.sh
+./makeCUDAsample.sh
 ```
 
 ### Custom OpenCV Installation
