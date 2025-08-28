@@ -2,6 +2,17 @@
 
 The instructions for testing or installing specific packages for the Jetson Nano B01 / Jetson Xavier NX development boards have been shifted to this README_ARCHIVE file, instead of the main README file.
 
+## Organisation
+The directory is split into 3 sections:
+- **AI_ML:** AI & Machine Learning related project(s)
+- **cpp_proj:** C++ related projects
+- **scripts:** Installation & setup scripts.
+
+### Nvidia lib location
+- libargus/Argus (For image processing): `/usr/src/jetson_multimedia_api/argus/`
+- Multimedia API: `/usr/src/jetson_multimedia_api/`
+- VisionWorks: `/usr/share/visionworks/sources`
+
 ## Camera
 
 Ensure that the cameras are attached via the CSI before running the camera-related script/program.

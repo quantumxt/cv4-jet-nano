@@ -2,10 +2,12 @@
 
 <a href="LICENSE" ><img src="https://img.shields.io/github/license/quantumxt/cv4-jet-nano?style=for-the-badge"/></a>
 
-This serves as a documentation & reference for the various resources available for the Jetson Nano, Jetson Xavier NX & Jetson Orin Nano development board with regards to Vision and AI based projects.
+This serves as a documentation & reference for the various resources available for the Jetson Orin Nano, Jetson Xavier NX & Jetson Nano development board with regards to Vision and AI based projects.
+
+> The documentation/resources related to the older Jetson Nano (B01) / Jetson Xavier NX development boards would be shifted to the `archive` directory & the README [here](./archive/README_ARCHIVE.md).
 
 ## Organisation
-The directory is split into 3 sections:
+The directory is organised as follows:
 - **AI_ML:** AI & Machine Learning related project(s)
 - **cpp_proj:** C++ related projects
 - **scripts:** Installation & setup scripts. Scripts for the older Jetson Nano and Jetson Xavier NX would be shifted to `archive` directory inside.
@@ -13,7 +15,6 @@ The directory is split into 3 sections:
 ### Nvidia lib location
 - libargus/Argus (For image processing): `/usr/src/jetson_multimedia_api/argus/`
 - Multimedia API: `/usr/src/jetson_multimedia_api/`
-- VisionWorks: `/usr/share/visionworks/sources` [Only for `Jetson Nano`/`Jetson Xavier NX`]
 
 ## Prerequisite
 
@@ -177,7 +178,7 @@ sudo chmod +x add_docker_group.sh
 
 ## Archive (Jetson Nano B01 / Jetson Xavier NX)
 
-For testing the Jetson Nano B01 / Jetson Xavier NX development boards, checkout the README [here](./README_ARCHIVE.md).
+For documentation/testing of the Jetson Nano B01 / Jetson Xavier NX, checkout the README [here](./archive/README_ARCHIVE.md).
 
 # License
 Licensed under the [MIT License](./LICENSE).
