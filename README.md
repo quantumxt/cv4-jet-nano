@@ -18,6 +18,14 @@ The directory is organised as follows:
 
 ## Prerequisite
 
+### pip
+
+Install python package manager `pip`.
+
+```sh
+sudo apt install python3-pip
+```
+
 ### CUDA paths
 
 Ensure that the CUDA compiler (nvcc) is added to `~/.bashrc`, which could be done so via the `add_cuda_path.sh` script.
@@ -151,6 +159,20 @@ nvgstcapture-1.0 --orientation 2	# Rotate image output by 180 degrees
 
 
 ## Tools
+
+### jtop
+
+Install `jtop` via `pip`.
+
+```sh
+sudo pip install -U jetson-stats
+```
+
+Reboot the jetson to use `jtop`.
+
+```sh
+jtop
+```
 
 ### Firefox
 
