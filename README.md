@@ -17,10 +17,6 @@ The directory is split into 3 sections:
 
 ## Prerequisite
 
-### Camera(s)
-
-Ensure that the cameras are attached via the CSI before running the camera-related script/program.
-
 ### CUDA paths
 
 Ensure that the CUDA compiler (nvcc) is added to `~/.bashrc`, which could be done so via the `add_cuda_path.sh` script.
@@ -30,6 +26,128 @@ cd ~/cv4-jet-nano/scripts
 sudo chmod +x add_cuda_path.sh
 ./add_cuda_path.sh
 ```
+
+## Camera
+
+### Setup (CSI Camera)
+
+Configure the camera via the `jetson-io.py` script for the Jetson Orin Nano.
+
+```sh
+sudo /opt/nvidia/jetson-io/jetson-io.py
+```
+
+The terminal show display the menu. Select `Configure Jetson 24pin CSI Connector`.
+
+```sh
+  =================== Jetson Expansion Header Tool ===================
+ |                                                                    |
+ |                                                                    |
+ |                    Select one of the following:                    |
+ |                                                                    |
+ |                   Configure Jetson 40pin Header                    |
+ |                Configure Jetson 24pin CSI Connector                |
+ |                  Configure Jetson M.2 Key E Slot                   |
+ |                                Exit                                |
+ |                                                                    |
+ |====================================================================|
+```
+
+Select `Configure for compatible hardware`.
+
+```sh
+  =================== Jetson Expansion Header Tool ===================
+ |                                                                    |
+ |                                                                    |
+ |                      3.3V (  1) .. (  2) i2c3                      |
+ |                      i2c3 (  3) .. (  4) GND                       |
+ |                       GND (  7) .. (  8) NA                        |
+ |                        NA (  9) .. ( 10) GND                       |
+ |                       GND ( 13) .. ( 14) NA                        |
+ |                        NA ( 15) .. ( 16) GND                       |
+ |                       GND ( 19) .. ( 20) NA                        |
+ |                        NA ( 21) .. ( 22) GND                       |
+ |                       GND ( 23) .. ( 24) GND                       |
+ |                                                                    |
+ |                                                                    |
+ |                    Jetson 24pin CSI Connector:                     |
+ |                                                                    |
+ |                 Configure for compatible hardware                  |
+ |                                Back                                |
+ |====================================================================|
+```
+
+After that, select the camera model that you would be using.
+
+> For example, if you are using a single IMX219 camera, select the `IMX219-A` option, which configures CAM0 for `IMX219-A` camera.
+
+```sh
+  =================== Jetson Expansion Header Tool ===================
+ |                                                                    |
+ |                                                                    |
+ |                Select one of the following options:                |
+ |                                                                    |
+ |                         Camera IMX219 Dual                         |
+ |                          Camera IMX219-A                           |
+ |                    Camera IMX219-A and IMX477-C                    |
+ |                          Camera IMX219-C                           |
+ |                         Camera IMX477 Dual                         |
+ |                     Camera IMX477 Dual 4 lane                      |
+ |                          Camera IMX477-A                           |
+ |                    Camera IMX477-A and IMX219-C                    |
+ |                          Camera IMX477-C                           |
+ |                                                                    |
+ |                                Back                                |
+ |                                                                    |
+ |                                                                    |
+ |====================================================================|
+```
+
+Select `Save pin changes`.
+
+```sh
+  =================== Jetson Expansion Header Tool ===================
+ |                                                                    |
+ |                                                                    |
+ |                      3.3V (  1) .. (  2) i2c3                      |
+ |                      i2c3 (  3) .. (  4) GND                       |
+ |                       GND (  7) .. (  8) NA                        |
+ |                        NA (  9) .. ( 10) GND                       |
+ |                       GND ( 13) .. ( 14) NA                        |
+ |                        NA ( 15) .. ( 16) GND                       |
+ |                       GND ( 19) .. ( 20) NA                        |
+ |                        NA ( 21) .. ( 22) GND                       |
+ |                       GND ( 23) .. ( 24) GND                       |
+ |                                                                    |
+ |                                                                    |
+ |                    Jetson 24pin CSI Connector:                     |
+ |                                                                    |
+ |                          Save pin changes                          |
+ |                        Discard pin changes                         |
+ |====================================================================|
+```
+
+Reboot the Jetson to use the camera!
+
+**References**
+
+- [https://forums.developer.nvidia.com/t/help-with-imx219-cameras/290628](https://forums.developer.nvidia.com/t/help-with-imx219-cameras/290628)
+- [https://forums.developer.nvidia.com/t/no-cameras-available/320541/2](https://forums.developer.nvidia.com/t/no-cameras-available/320541/2)
+- [https://docs.arducam.com/Nvidia-Jetson-Camera/Application-note/Jetson-io/](https://docs.arducam.com/Nvidia-Jetson-Camera/Application-note/Jetson-io/)
+
+### First image
+
+Use the `nvgstcapture-1.0` command to check whether the camera is working.
+
+```sh
+nvgstcapture-1.0
+nvgstcapture-1.0 --orientation 2	# Rotate image output by 180 degrees
+```
+
+**References**
+
+- [https://developer.nvidia.com/embedded/learn/tutorials/first-picture-csi-usb-camera](https://developer.nvidia.com/embedded/learn/tutorials/first-picture-csi-usb-camera)
+
 
 ## Tools
 
@@ -59,12 +177,22 @@ sudo chmod +x add_docker_group.sh
 
 ## Camera
 
-### Quickstart
+
+## C++ project
+More information could be found [here](cpp_proj/README.md).
+
+## Archive (Jetson Nano B01 / Jetson Xavier NX)
+
+### Camera
+
+Ensure that the cameras are attached via the CSI before running the camera-related script/program.
+
+#### Quickstart
 ```
 $ gst-launch-1.0 nvarguscamerasrc sensor_mode=0 ! 'video/x-raw(memory:NVMM),width=3820, height=2464, framerate=21/1, format=NV12' ! nvvidconv flip-method=0 ! 'video/x-raw,width=960, height=616' ! nvvidconv ! nvegltransform ! nveglglessink -e
 ```
 
-### Testing the camera(s)
+#### Testing
 
 Make the `runCam.sh` script executable:
 ```bash
@@ -80,11 +208,6 @@ $ runCam.sh -d
 ```
 > **[Additional information on Gstreamer](https://developer.ridgerun.com/wiki/index.php?title=Jetson_Nano/Gstreamer/Example_Pipelines/Capture_Display)**
 
-
-## C++ project
-More information could be found [here](cpp_proj/README.md).
-
-## Archive (Jetson Nano B01 / Jetson Xavier NX)
 
 ### Heatsink fan (Jetson Nano B01 ONLY)
 
