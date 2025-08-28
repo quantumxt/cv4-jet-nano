@@ -3,17 +3,11 @@
 #********************************************************************
 #
 # OpenVSLAM Installation Script
-# Version 1.0.0
+# Version 1.0.1
 #
 # Licensed under the MIT License.
-#  __ _  _   ___ ______ ____                    _                   
-# /_ | || | / _ \____  / __ \                  | |                  
-#  | | || || (_) |  / / |  | |_   _  __ _ _ __ | |_ _   _ _ __ ___  
-#  | |__   _> _ <  / /| |  | | | | |/ _` | '_ \| __| | | | '_ ` _ \ 
-#  | |  | || (_) |/ / | |__| | |_| | (_| | | | | |_| |_| | | | | | |
-#  |_|  |_| \___//_/   \___\_\\__,_|\__,_|_| |_|\__|\__,_|_| |_| |_|
 #                              
-# Copyright(c) 1487Quantum
+# Copyright(c) quantumxt
 #
 #********************************************************************
 
@@ -219,7 +213,7 @@ SV=ON
 fi
 
 pmsg "MAIN INSTALLATION\nCloning OpenVSLAM..."
-git clone https://github.com/1487quantum/openvslam
+git clone https://github.com/quantumxt/openvslam
 cd openvslam
 makeDirEnter build
 pmsg "Making & Compiling OpenVSLAM..."
