@@ -39,7 +39,7 @@ Install Firefox browser via `flatpak`, as there may be issues installing via sna
 
 ```sh
 cd ~/cv4-jet-nano/scripts
-sudo chmod +x install_firefox_flatpak.sh.sh
+sudo chmod +x install_firefox_flatpak.sh
 ./install_firefox_flatpak.sh
 ```
 
