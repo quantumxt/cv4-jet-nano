@@ -46,6 +46,16 @@ sudo chmod +x install_firefox_flatpak.sh
  **References**
  - [https://jetsonhacks.com/2025/07/12/why-chromium-suddenly-broke-on-jetson-orin-and-how-to-bring-it-back/](https://jetsonhacks.com/2025/07/12/why-chromium-suddenly-broke-on-jetson-orin-and-how-to-bring-it-back/)
  - [https://forums.developer.nvidia.com/t/neither-chromium-nor-firefox-work-with-my-jetson-orin-nano/338669](https://forums.developer.nvidia.com/t/neither-chromium-nor-firefox-work-with-my-jetson-orin-nano/338669)
+ 
+### Docker
+
+Access docker without running `sudo`, by adding user to the `docker` group.
+
+```sh
+cd ~/cv4-jet-nano/scripts
+sudo chmod +x add_docker_group.sh
+./add_docker_group.sh
+``` 
 
 ## Camera
 
