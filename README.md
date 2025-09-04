@@ -6,6 +6,8 @@ This serves as a documentation & reference for the various resources available f
 
 > The documentation/resources related to the older Jetson Nano (B01) / Jetson Xavier NX development boards would be shifted to the `archive` directory & the README [here](./archive/README_ARCHIVE.md).
 
+> Documentation is based off Jetpack 6.2 (`R36 (release), REVISION: 4.4`), you could check the system version via `cat /etc/nv_tegra_release`.
+
 ## Organisation
 The directory is organised as follows:
 - **AI_ML:** AI & Machine Learning related project(s)
@@ -35,6 +37,25 @@ cd ~/cv4-jet-nano/scripts
 sudo chmod +x add_cuda_path.sh
 ./add_cuda_path.sh
 ```
+
+#### `jetson-containers` (For Language Models)
+
+The `jetson-containers` would be used to run the various types of language models, such as LLM, VLM, etc.
+
+```sh
+git clone https://github.com/dusty-nv/jetson-containers
+bash jetson-containers/install.sh
+```
+
+Run a SLM model.
+
+```sh
+jetson-containers run $(autotag nano_llm) \
+  python3 -m nano_llm.chat --api=mlc \
+    --model princeton-nlp/Sheared-LLaMA-2.7B-ShareGPT
+```
+
+> The `dustynv/nano_llm:r36.4.0` model is `12.7GB`.
 
 ## Camera
 
@@ -196,7 +217,48 @@ Access docker without running `sudo`, by adding user to the `docker` group.
 cd ~/cv4-jet-nano/scripts
 sudo chmod +x add_docker_group.sh
 ./add_docker_group.sh
-``` 
+```
+
+## Troubleshooting
+
+### `jetson-containers` not found
+
+#### Check Jetpack installation
+
+Check if `Jetpack` is installed via `dpkg -l | grep nvidia-jetpack`. If it returns nothing, it means that the `Jetpack` installation is missing.
+
+Install `nvidia-jetpack`.
+
+```sh
+sudo apt update
+sudo apt install -y nvidia-jetpack
+```
+
+After the installation, run `dpkg -l | grep nvidia-jetpack` to check the installation. It should print something similar as shown below.
+
+```sh
+ii  nvidia-jetpack                          6.2.1+b38                 arm64        NVIDIA Jetpack Meta Package
+ii  nvidia-jetpack-dev                      6.2.1+b38                 arm64        NVIDIA Jetpack dev Meta Package
+ii  nvidia-jetpack-runtime                  6.2.1+b38                 arm64        NVIDIA Jetpack runtime Meta Package
+```
+
+**References**
+
+- [https://github.com/dusty-nv/jetson-containers](https://github.com/dusty-nv/jetson-containers)
+
+### Entering terminal session
+
+To enter into terminal session inside the GUI (Gnome Desktop).
+
+```sh
+sudo init 3
+```
+
+To return to GUI:
+
+```sh
+sudo init 5
+```
 
 ## Archive (Jetson Nano B01 / Jetson Xavier NX)
 
