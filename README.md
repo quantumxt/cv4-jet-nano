@@ -6,7 +6,7 @@ This serves as a documentation & reference for the various resources available f
 
 > The documentation/resources related to the older Jetson Nano (B01) / Jetson Xavier NX development boards would be shifted to the `archive` directory & the README [here](./archive/README_ARCHIVE.md).
 
-> Documentation is based off Jetpack 6.2 (`R36 (release), REVISION: 4.4`), you could check the system version via `cat /etc/nv_tegra_release`.
+> Documentation is tested on Jetpack 6.2 (`R36 (release), REVISION: 4.4`), you could check the system version via `cat /etc/nv_tegra_release`.
 
 ## Organisation
 The directory is organised as follows:
@@ -55,7 +55,7 @@ jetson-containers run $(autotag nano_llm) \
     --model princeton-nlp/Sheared-LLaMA-2.7B-ShareGPT
 ```
 
-> The `dustynv/nano_llm:r36.4.0` model is `12.7GB`.
+> The `dustynv/nano_llm:r36.4.0` container is `12.7GB`.
 
 ## Camera
 
