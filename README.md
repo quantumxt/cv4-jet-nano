@@ -246,6 +246,33 @@ ii  nvidia-jetpack-runtime                  6.2.1+b38                 arm64     
 
 - [https://github.com/dusty-nv/jetson-containers](https://github.com/dusty-nv/jetson-containers)
 
+### "Jetpack not installed" when using `jtop`
+
+`jtop` might not be updated to display the latest Jetpack version, we could use a patch from [jetsonhacks](https://github.com/jetsonhacks/jetson-jtop-patch) to fix this issue for now.
+
+```sh
+git clone https://github.com/jetsonhacks/jetson-jtop-patch.git
+cd jetson-jtop-patch
+chmod +x apply_jtop_fix.sh
+./apply_jtop_fix.sh
+```
+
+Reboot after the patch has been applied.
+
+```sh
+sudo reboot
+```
+
+The Jetpack version should be shown when running `jtop` again.
+
+```sh
+jtop
+```
+
+**References**
+- Main: https://github.com/jetsonhacks/jetson-jtop-patch
+- Alternative: https://github.com/cyaninfinite/jetson-jtop-patch
+
 ### Entering terminal session
 
 To enter into terminal session inside the GUI (Gnome Desktop).
