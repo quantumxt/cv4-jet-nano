@@ -52,7 +52,7 @@ Run a SLM model.
 ```sh
 jetson-containers run $(autotag nano_llm) \
   python3 -m nano_llm.chat --api=mlc \
-    --model princeton-nlp/Sheared-LLaMA-2.7B-ShareGPT
+    --model TinyLlama/TinyLlama-1.1B-Chat-v1.0
 ```
 
 > The `dustynv/nano_llm:r36.4.0` container is `12.7GB`.
