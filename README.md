@@ -6,6 +6,8 @@ This serves as a documentation & reference for the various resources available f
 
 > The documentation/resources related to the older Jetson Nano (B01) / Jetson Xavier NX development boards would be shifted to the `archive` directory & the README [here](./archive/README_ARCHIVE.md).
 
+> Documentation is tested on Jetpack 6.2 (`R36 (release), REVISION: 4.4`), you could check the system version via `cat /etc/nv_tegra_release`.
+
 ## Organisation
 The directory is organised as follows:
 - **AI_ML:** AI & Machine Learning related project(s)
@@ -18,6 +20,14 @@ The directory is organised as follows:
 
 ## Prerequisite
 
+### pip
+
+Install python package manager `pip`.
+
+```sh
+sudo apt install python3-pip
+```
+
 ### CUDA paths
 
 Ensure that the CUDA compiler (nvcc) is added to `~/.bashrc`, which could be done so via the `add_cuda_path.sh` script.
@@ -27,6 +37,25 @@ cd ~/cv4-jet-nano/scripts
 sudo chmod +x add_cuda_path.sh
 ./add_cuda_path.sh
 ```
+
+#### `jetson-containers` (For Language Models)
+
+The `jetson-containers` would be used to run the various types of language models, such as LLM, VLM, etc.
+
+```sh
+git clone https://github.com/dusty-nv/jetson-containers
+bash jetson-containers/install.sh
+```
+
+Run a SLM model.
+
+```sh
+jetson-containers run $(autotag nano_llm) \
+  python3 -m nano_llm.chat --api=mlc \
+    --model TinyLlama/TinyLlama-1.1B-Chat-v1.0
+```
+
+> The `dustynv/nano_llm:r36.4.0` container is `12.7GB`.
 
 ## Camera
 
@@ -152,6 +181,20 @@ nvgstcapture-1.0 --orientation 2	# Rotate image output by 180 degrees
 
 ## Tools
 
+### jtop
+
+Install `jtop` via `pip`.
+
+```sh
+sudo pip install -U jetson-stats
+```
+
+Reboot the jetson to use `jtop`.
+
+```sh
+jtop
+```
+
 ### Firefox
 
 Install Firefox browser via `flatpak`, as there may be issues installing via snap.
@@ -174,7 +217,75 @@ Access docker without running `sudo`, by adding user to the `docker` group.
 cd ~/cv4-jet-nano/scripts
 sudo chmod +x add_docker_group.sh
 ./add_docker_group.sh
-``` 
+```
+
+## Troubleshooting
+
+### `jetson-containers` not found
+
+#### Check Jetpack installation
+
+Check if `Jetpack` is installed via `dpkg -l | grep nvidia-jetpack`. If it returns nothing, it means that the `Jetpack` installation is missing.
+
+Install `nvidia-jetpack`.
+
+```sh
+sudo apt update
+sudo apt install -y nvidia-jetpack
+```
+
+After the installation, run `dpkg -l | grep nvidia-jetpack` to check the installation. It should print something similar as shown below.
+
+```sh
+ii  nvidia-jetpack                          6.2.1+b38                 arm64        NVIDIA Jetpack Meta Package
+ii  nvidia-jetpack-dev                      6.2.1+b38                 arm64        NVIDIA Jetpack dev Meta Package
+ii  nvidia-jetpack-runtime                  6.2.1+b38                 arm64        NVIDIA Jetpack runtime Meta Package
+```
+
+**References**
+
+- [https://github.com/dusty-nv/jetson-containers](https://github.com/dusty-nv/jetson-containers)
+
+### "Jetpack not installed" when using `jtop`
+
+`jtop` might not be updated to display the latest Jetpack version, we could use a patch from [jetsonhacks](https://github.com/jetsonhacks/jetson-jtop-patch) to fix this issue for now.
+
+```sh
+git clone https://github.com/jetsonhacks/jetson-jtop-patch.git
+cd jetson-jtop-patch
+chmod +x apply_jtop_fix.sh
+./apply_jtop_fix.sh
+```
+
+Reboot after the patch has been applied.
+
+```sh
+sudo reboot
+```
+
+The Jetpack version should be shown when running `jtop` again.
+
+```sh
+jtop
+```
+
+**References**
+- Main: https://github.com/jetsonhacks/jetson-jtop-patch
+- Alternative: https://github.com/cyaninfinite/jetson-jtop-patch
+
+### Entering terminal session
+
+To enter into terminal session inside the GUI (Gnome Desktop).
+
+```sh
+sudo init 3
+```
+
+To return to GUI:
+
+```sh
+sudo init 5
+```
 
 ## Archive (Jetson Nano B01 / Jetson Xavier NX)
 
